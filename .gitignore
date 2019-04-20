@@ -2,3 +2,4 @@
 **/*.rs.bk
 secrets.toml
 .idea/
+.DS_Store
