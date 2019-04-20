@@ -1,6 +1,8 @@
 extern crate inflector;
 extern crate reqwest;
 
+use std::cmp::max;
+
 use inflector::Inflector;
 use serenity::{
     builder::CreateEmbed,
@@ -22,10 +24,10 @@ pub fn cmd(_context: &mut Context, message: &Message, args: Args) -> Result<(), 
         .unwrap();
 
     let item = &response.list[0];
-
     // trim definition to not make message go over 1000 characters
     let mut definition = item.definition.clone();
-    definition = definition[..definition.len() - (definition.len() + item.example.len() - 1000)].to_string();
+    let length_excess = max(0, (definition.len() + item.example.len()) as isize - 1000) as usize;
+    definition = definition[..definition.len() - length_excess].to_string();
     definition = if definition != item.definition { format!("{}{}", definition, "...") } else { definition };
 
     message.channel_id.send_message(|m| m.embed(|_e| CreateEmbed::default()
